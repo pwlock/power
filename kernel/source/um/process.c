@@ -60,6 +60,7 @@ static void createStreams(struct process* p)
         h->Resource = mmAllocKernelObject(struct pipe_data);
         ((struct pipe_data*)h->Resource)->RingBuffer = rbCreateBuffer(12);
         ((struct pipe_data*)h->Resource)->Flags = PIPE_FLAGS_READ_TO_TTY;
+        
         h->Identifier = i;
         h->Type = HANDLE_TYPE_PIPE;
         vectorInsert(&p->Handles, h);

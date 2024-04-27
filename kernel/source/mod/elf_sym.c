@@ -12,7 +12,7 @@
 
 static struct elf_executable kernelFile = {};
 
-static bool slowCompare(const char* s1, const char* s2)
+bool elfSlowCompare(const char* s1, const char* s2)
 {
     while (s1 && *s2) {
         if (*s1 != *s2)
@@ -47,7 +47,7 @@ void* modGetSymbolElf(struct elf_executable* exec, const char* symbol)
         const struct elf_symtab_item* s = &symtab[i];
         size_t symtl = strlen(strtab + s->NameOffset);
 
-        if (slowCompare(symbol, strtab + s->NameOffset)) {
+        if (elfSlowCompare(symbol, strtab + s->NameOffset)) {
             return (void*)(s->Value);
         }
     }

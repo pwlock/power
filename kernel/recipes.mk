@@ -7,11 +7,12 @@ KERNEL_BUILD=build/kernel
 KERNEL_ABSTRACT_CFILES=abstract/interrupt_ctl.c abstract/timer.c
 KERNEL_MEMORY_CFILES=memory/physical.c memory/address.c memory/user_heap.c memory/ring.c
 KERNEL_MOD_CFILES=mod/ustar.c mod/elf.c mod/driver/loader.c mod/driver/kinterface.c \
-				  mod/ld/elf_ld.c mod/elf_sym.c mod/driver/autoloader.c mod/ld/elf_hashsym.c
+				  mod/ld/elf_ld.c mod/elf_sym.c mod/driver/autoloader.c mod/ld/elf_hashsym.c \
+				  mod/ld/elf_reloc.c
 KERNEL_SCHEDULER_CFILES=scheduler/scheduler.c scheduler/thread.c scheduler/synchronization.c
 KERNEL_TERM_CFILES=term/toshibatxl1.c term/terminal.c
 KERNEL_UM_CFILES=um/process.c um/syscall.c um/ioctl.c um/input.c
-KERNEL_UTILS_CFILES=utils/string.c utils/vector.c utils/cmd.c
+KERNEL_UTILS_CFILES=utils/string.c utils/vector.c utils/cmd.c utils/ring_buffer.c
 
 KERNEL_CFILES=main.c bootloader_requests.c acpi.c partition.c pci.c vfs.c \
 			$(KERNEL_TERM_CFILES) $(KERNEL_UTILS_CFILES) \

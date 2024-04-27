@@ -17,3 +17,5 @@ struct elf_symtab_item
 /* NULL will make the function search in the kernel
    symtab */
 void* modGetSymbolElf(struct elf_executable*, const char* symbol);
+
+bool elfSlowCompare(const char* s1, const char* s2);

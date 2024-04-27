@@ -8,18 +8,18 @@
 
 #include <stdint.h>
 
-static uint32_t oldStyleHash(const char* name)
+static unsigned long 
+oldStyleHash(const char* name)
 {
-    uint32_t h = 0;
-    uint32_t g;
+    unsigned long h = 0;
+    unsigned long g;
 
     while(*name) {
         h = (h << 4) + *name++;
         if ((g = h & 0xf0000000)) {
             h ^= g >> 24;
         }
-
-        h &= ~g;
+        h &= 0x0fffffff;
     }
 
     return h;
@@ -38,14 +38,23 @@ void* modSearchHashSymbol(struct elf_executable* exec,
 
     const uint32_t* bucket = PaAdd(hs, sizeof(*hs));
     const uint32_t* chain = PaAdd(bucket, hs->BucketCount * sizeof(uint32_t));
-    uint32_t hash = oldStyleHash(symbolName);
-    
+    uint64_t hash = oldStyleHash(symbolName);
+    if (elfSlowCompare(symbolName, "stdout")) {
+        uint64_t tr = oldStyleHash("strtok");
+        trmLogfn("hash=%p, mdo bucket count = %i strtok hash=%p, mod bc = %i", hash, hash % hs->BucketCount, tr, tr % hs->BucketCount);
+    }
+
+
     for (uint32_t i = bucket[hash % hs->BucketCount]; i; i = chain[i]) {
+        if (!strcmp(symbolName, "stdout")) {
+            trmLogfn("chain[i] = %s %i %p", dynstr + dsym[i].NameOffset, i, exec->Base);
+        }
+
         if (oldStyleHash(dynstr + dsym[i].NameOffset) != hash) {
             continue;
         }
 
-        if (!strcmp(symbolName, dynstr + dsym[i].NameOffset)) {
+        if (elfSlowCompare(symbolName, dynstr + dsym[i].NameOffset)) {
             if (dsym[i].SectionHeaderTableIndex == ELF_SHN_UNDEF)
                 return NULL;
 

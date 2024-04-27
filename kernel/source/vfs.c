@@ -182,11 +182,10 @@ uint64_t syscReadFile(union sysc_regs* regs)
             return -1;
 
         if (pd->Flags & PIPE_FLAGS_INPUT_BUFFER) {
-            struct input_event* ev = inpReadEvent();
+            struct input_event ev = inpReadEvent();
             if (regs->Arg3 != sizeof(struct input_event))
                 return -1;
-            memcpy((void*)regs->Arg2, ev, sizeof(struct input_event));
-            mmFreeKernelObject(ev);
+            memcpy((void*)regs->Arg2, &ev, sizeof(struct input_event));
             return sizeof(struct input_event);
         }
     }
