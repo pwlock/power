@@ -2,12 +2,12 @@
 #include "arch/i386/paging.h"
 #include "memory/address.h"
 #include "memory/physical.h"
-#include "memory/ring.h"
 #include "mod/elf.h"
 #include "mod/ld/elf_ld.h"
 #include "scheduler/scheduler.h"
 #include "scheduler/thread.h"
 #include "term/terminal.h"
+#include "utils/ring_buffer.h"
 #include "utils/vector.h"
 #include "utils/string.h"
 #include "vfs.h"
@@ -58,7 +58,7 @@ static void createStreams(struct process* p)
     for (int i = 0; i < 3; i++) {
         struct handle* h = mmAllocKernelObject(struct handle);
         h->Resource = mmAllocKernelObject(struct pipe_data);
-        ((struct pipe_data*)h->Resource)->RingBuffer = rbCreateBuffer(12);
+        ((struct pipe_data*)h->Resource)->RingBuffer = ringInit(sizeof(void*), 12);
         ((struct pipe_data*)h->Resource)->Flags = PIPE_FLAGS_READ_TO_TTY;
         
         h->Identifier = i;

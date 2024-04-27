@@ -1,6 +1,5 @@
 #include "input.h"
 #include "memory/physical.h"
-#include "memory/ring.h"
 #include "power/input.h"
 #include "scheduler/synchronization.h"
 #include "term/terminal.h"

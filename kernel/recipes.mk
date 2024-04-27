@@ -5,7 +5,7 @@ KERNEL_BUILD=build/kernel
 -include kernel/source/arch/i386/sources.mk
 
 KERNEL_ABSTRACT_CFILES=abstract/interrupt_ctl.c abstract/timer.c
-KERNEL_MEMORY_CFILES=memory/physical.c memory/address.c memory/user_heap.c memory/ring.c
+KERNEL_MEMORY_CFILES=memory/physical.c memory/address.c memory/user_heap.c
 KERNEL_MOD_CFILES=mod/ustar.c mod/elf.c mod/driver/loader.c mod/driver/kinterface.c \
 				  mod/ld/elf_ld.c mod/elf_sym.c mod/driver/autoloader.c mod/ld/elf_hashsym.c \
 				  mod/ld/elf_reloc.c

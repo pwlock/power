@@ -2,7 +2,6 @@
    Purpose: Process manager */
 #pragma once
 
-#include "memory/ring.h"
 #include "utils/vector.h"
 #include "vfs.h"
 #include <stddef.h>
@@ -16,7 +15,7 @@
 #define STREAM_STDIN 2
 #define STREAM_STDERR 1
 
-#define PIPE_FLAGS_READ_TO_TTY (1 << 0) /*< When writing, immediately read and place onto the terminal*/
+#define PIPE_FLAGS_READ_TO_TTY (1 << 0) /*< Direct IO calls to trm* functions */
 #define PIPE_FLAGS_INPUT_BUFFER (1 << 1) /*< Direct IO calls to input buffer calls. */
 
 struct handle
@@ -28,7 +27,7 @@ struct handle
 
 struct pipe_data
 {
-    struct ringb* RingBuffer;
+    struct ring* RingBuffer;
     int ReferenceCount;
     int Flags;
 };

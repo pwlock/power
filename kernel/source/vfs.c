@@ -1,7 +1,6 @@
 #include "vfs.h"
 #include "config.h"
 
-#include "memory/ring.h"
 #include "mod/driver/driver.h"
 #include "mod/driver/driver_kinterface.h"
 #include "mod/driver/loader.h"
@@ -15,6 +14,7 @@
 #include "um/input.h"
 #include "um/process.h"
 #include "um/syscall.h"
+#include "utils/ring_buffer.h"
 #include "utils/string.h"
 #include "utils/vector.h"
 
@@ -204,7 +204,7 @@ uint64_t syscWriteFile(union sysc_regs* regs)
         break;
     case HANDLE_TYPE_PIPE: {
         struct pipe_data* pd = buffer->Resource;
-        struct ringb* rb = pd->RingBuffer;
+        struct ring* rb = pd->RingBuffer;
         if (pd->Flags & PIPE_FLAGS_READ_TO_TTY) {
             trmLog((const char*)regs->Arg2);
             break;
@@ -219,7 +219,7 @@ uint64_t syscWriteFile(union sysc_regs* regs)
         pp->Length = regs->Arg3;
 
         memcpy(pp->Data, (void*)regs->Arg2, pp->Length);
-        rbWrite(rb, pp);
+        ringWrite(rb, pp);
         break;
     }
     default:
