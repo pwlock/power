@@ -2,7 +2,7 @@
    Purpose: input definitions for user mode */
 #pragma once
 
-#include <stdint.h>
+#include "types.h"
 
 #define KEY_NO_POLLUTE
 #include "input_code.h"
@@ -12,9 +12,9 @@
 
 struct input_event
 {
-    int Type;
-    int Code;
-    int Flags;
+    __int32 Type;
+    __int32 Code;
+    __int32 Flags;
 
-    uint64_t Reserved;
+    __uint64 Reserved;
 };

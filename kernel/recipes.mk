@@ -34,7 +34,8 @@ KERNEL_LDFLAGS=-nostdlib -static -Wl,-m -Wl,elf_x86_64 -Wl,-z -Wl,max-page-size=
 # =============================== HEADERS
 KERNEL_INCLUDE_DIR=kernel/include
 KERNEL_HEADERS=$(KERNEL_INCLUDE_DIR)/power/system.h $(KERNEL_INCLUDE_DIR)/power/ioctl.h \
-				$(KERNEL_INCLUDE_DIR)/power/input.h $(KERNEL_INCLUDE_DIR)/power/input_code.h 
+				$(KERNEL_INCLUDE_DIR)/power/input.h $(KERNEL_INCLUDE_DIR)/power/input_code.h \
+				$(KERNEL_INCLUDE_DIR)/power/types.h
 KERNEL_INSTALLED_HEADERS=$(addprefix $(SYSTEM_ROOT)/System/Headers/,$(subst $(KERNEL_INCLUDE_DIR)/,,$(KERNEL_HEADERS)))
 # ================================
 

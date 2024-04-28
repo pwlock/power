@@ -3,7 +3,7 @@
         (especially when DEVICE param is NULL) */
 #pragma once
 
-#include <stdint.h>
+#include "power/types.h"
 
 #ifndef _POWER_IOCTL_H
 #define _POWER_IOCTL_H
@@ -16,23 +16,22 @@
 
 struct ioctl_get_disk
 {
-    unsigned long Length;
-    int* Data;
+    __uint64 Length;
+    __int32* Data;
 };
 
 union ioctl_uuid
 {
     struct {
-        uint32_t Data1;
-        uint16_t Data2;
-        uint16_t Data3;
-        uint8_t Data4[2];
-        uint8_t Data5[6];
+        __uint32 Data1;
+        __uint16 Data2;
+        __uint16 Data3;
+        __uchar Data4[2];
+        __uchar Data5[6];
     };
-    unsigned char Raw[16];
+    __uchar Raw[16];
 };
 
-typedef int DEVICE; /*< Device handle */ 
 struct ioctl_search_partition
 {
     int Disk;

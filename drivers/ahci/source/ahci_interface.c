@@ -41,6 +41,8 @@ static int readSector(struct driver_disk_device_interface* ddi, uint64_t lba,
     struct ahci_device* ah = (struct ahci_device*)ddi;
     if (ah->Type == AHCI_DEVTYPE_ATAPI)
         return ahatapiReadSector(ah, lba, buffer, length);
+    else if (ah->Type == AHCI_DEVTYPE_ATA)
+        return ahataReadSector(ah, lba, buffer, length);
 
     return -ERROR_INVALID_ARGUMENT;
 }

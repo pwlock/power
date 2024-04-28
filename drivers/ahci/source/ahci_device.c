@@ -54,4 +54,9 @@ void ahciDeviceConfigure(struct ahci_device* dev)
             dev->Info.BytesPerSector = *ssptr * sizeof(uint16_t);
         }
     }
+
+    {
+        uint16_t w83 = buffer[83];
+        dev->Info.Lba48Bit = w83 & AHCI_IDENTIFY_48BIT_BIT;
+    }
 }

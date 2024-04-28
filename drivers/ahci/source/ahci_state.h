@@ -15,6 +15,8 @@ struct ahci_device_info
     char Model[40];
     uint64_t MaxLba;
     uint16_t BytesPerSector;
+
+    bool Lba48Bit; /*< Support for 48-bit LBAs */
 };
 
 struct ahci_device

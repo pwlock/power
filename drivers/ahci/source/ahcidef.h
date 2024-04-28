@@ -94,15 +94,15 @@ fis_h2d /*< Host-to-device.  */
     uint8_t MultiplierCommand; /*< PM and control or command*/
 
     /* Registers */
-    uint8_t Command;
+    uint8_t Command; 
     uint8_t Features;
 
-    uint8_t LbaLow;
-    uint8_t LbaMid;
-    uint8_t LbaHigh;
+    uint8_t LbaLow; /*< LBA first byte */
+    uint8_t LbaMid; /*< Second byte */
+    uint8_t LbaHigh; /*< Third byte */
     uint8_t Device;
 
-    uint8_t Lba3, Lba4, Lba5;
+    uint8_t Lba3, Lba4, Lba5; /*< LBA 4th, 5th and 6th byte */
     uint8_t UpperFeatures;
 
     uint8_t Count;
