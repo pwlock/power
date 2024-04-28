@@ -91,11 +91,15 @@ void secondInit(void* nothing)
     asm volatile("sti");
 
     modAutomaticLoad();
-    struct kdriver_manager* man = modGetDriver("ahci.kd");
+    const char* driveController;
+    cmdGetCommandArgument("drivectl", &driveController);
+
+    struct kdriver_manager* man = modGetDriver(driveController);
+    if (!man)
+        trmLogfn("drive controller %s not found", driveController);
+
     struct driver_disk_interface* di = man->Info->Interface;
     struct driver_disk_device_interface* ddi = di->getDevice(di, 0);
-    uint8_t buff;
-    ddi->readSector(ddi, 0, 1, &buff);
     partInit(di);
 
     vfsInit();

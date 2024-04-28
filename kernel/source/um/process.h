@@ -40,9 +40,7 @@ struct pipe_packet
 
 struct process
 {
-    struct process* Parent;
-    void* SyscallStack; /*< Stack used for syscalls */
-    
+    struct process* Parent;    
     struct handle Streams[3]; 
     struct vector Children;
     struct vector Threads;

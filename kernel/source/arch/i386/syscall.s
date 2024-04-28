@@ -2,16 +2,16 @@
 ; Purpose: System call register translation layer
 extern syscGenericHandler
 
-extern pcGetCurrentProcess
+extern schedGetCurrentThread
 getStack:
-    ; TODO implement mutex and add a shield here.
-    call pcGetCurrentProcess
+    xchg bx, bx
+    call schedGetCurrentThread
     cmp rax, 0
     jne .different
     ret
 
 .different:
-    mov rax, qword [rax+8]
+    mov rax, qword [rax+212]
     ret
 
 global syscTranslate

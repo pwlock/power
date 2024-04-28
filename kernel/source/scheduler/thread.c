@@ -47,15 +47,17 @@ schedCreateThreadEx(thread_execution_pfn_t ep, struct thread_args* args,
     memset(th, 0, sizeof(*th));
 
     th->StackTop = threadAllocateStack(args->AddressSpace, 8192);
+    if (flags & THREAD_CREATE_USER_MODE) {
+        th->KernelStack = threadAllocateStack(args->AddressSpace, 4096);
+    }
 
     th->Registers.Pointers.Rsp = (uint64_t)th;
     th->Registers.Pointers.Rip = (uint64_t)ep;
-    th->Registers.CodeSegment = (flags & THREAD_CREATE_USER_MODE) ? USER_CODE_SEGMENT : 3 * 8;
-    th->Registers.DataSegment = (flags & THREAD_CREATE_USER_MODE) ? USER_DATA_SEGMENT : 4 * 8;
+    th->Registers.CodeSegment = (flags & THREAD_CREATE_USER_MODE) ? USER_CODE_SEGMENT : KERNEL_CODE_SEGMENT;
+    th->Registers.DataSegment = (flags & THREAD_CREATE_USER_MODE) ? USER_DATA_SEGMENT : KERNEL_DATA_SEGMENT;
     th->Registers.Cr3 = (uint64_t)args->AddressSpace;
     if (fpsGetBufferSize()) {
         th->Registers.FloatingPointState = mmAlignedAlloc(fpsGetBufferSize(), fpsGetBufferAlignment());
-        trmLogfn("th->Registers.FPS=%p", th->Registers.FloatingPointState);
     }
 
     uint64_t* ptr = pgGetPhysicalAddress(args->AddressSpace, (uint64_t)th->StackTop - sizeof(uint64_t));
@@ -68,6 +70,10 @@ schedCreateThreadEx(thread_execution_pfn_t ep, struct thread_args* args,
 
 void schedFreeThread(struct thread* restrict thread)
 {
+    if (thread->KernelStack) {
+        mmAlignedFree(thread->KernelStack, 4096);
+    }
+
     mmAlignedFree(thread->Registers.FloatingPointState, 512);
     mmAlignedFree(thread->StackTop, 4096);
     mmFreeKernelObject(thread);

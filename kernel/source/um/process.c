@@ -86,6 +86,7 @@ struct process* pcCreateProcess(struct process* parent, const char* name,
         pman.Processes = p;
         size_t length = vfsGetPathComponent(name);
         p->WorkingDirectory = mmAllocKernel(length + 1);
+        
         memset(p->WorkingDirectory, 0, length + 1);
         memcpy(p->WorkingDirectory, name, length);
     } 
@@ -106,7 +107,6 @@ struct process* pcCreateProcess(struct process* parent, const char* name,
     struct thread* t = schedCreateThreadEx((thread_execution_pfn_t)((uint8_t*)ex.EntryPoint), 
                                 &args, THREAD_CREATE_USER_MODE);
     t->Process = p;
-    p->SyscallStack = threadAllocateStack(ex.AddressSpace, 4096);
     createStreams(p);
 
     schedAddThread(t);

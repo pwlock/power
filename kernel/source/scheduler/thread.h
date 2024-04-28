@@ -31,12 +31,14 @@ struct thread_timing
     unsigned int CurrentQuantum;
 };
 
-struct thread
+struct __attribute__((packed))
+thread
 {
     struct thread_registers Registers;
     struct thread_timing Timing;
     struct process* Process;
     void* StackTop;
+    void* KernelStack;
     int Identifier;
     bool Suspended;
 };
