@@ -104,7 +104,7 @@ struct process* pcCreateProcess(struct process* parent, const char* name,
     p->CommandLine = mapString(ex.AddressSpace, cmdargs);
 
     struct thread_args args = { ex.AddressSpace, 0 };
-    struct thread* t = schedCreateThreadEx((thread_execution_pfn_t)((uint8_t*)ex.EntryPoint), 
+    struct thread* t = schedCreateThreadEx((thread_execution_pfn_t)((uint8_t*)ex.EntryPoint), NULL,
                                 &args, THREAD_CREATE_USER_MODE);
     t->Process = p;
     createStreams(p);

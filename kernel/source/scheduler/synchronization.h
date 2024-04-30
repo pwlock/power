@@ -18,3 +18,9 @@ struct s_mutex* schedCreateMutex();
 void schedDestroyMutex(struct s_mutex*);
 void schedMutexAcquire(struct s_mutex*);
 void schedMutexRelease(struct s_mutex*);
+
+struct s_semaphore;
+struct s_semaphore* schedCreateSemaphore(int slot);
+void schedDestroySemaphore(struct s_semaphore* sem);
+void schedSemaphoreAcquire(struct s_semaphore*);
+void schedSemaphoreRelease(struct s_semaphore*);

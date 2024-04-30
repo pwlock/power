@@ -10,6 +10,8 @@
 
 #define THREAD_CREATE_USER_MODE 0x00000000001
 
+#define THREAD_NOT_SLEEPING 0xFFFFFFFF /*< Thread suspended but not by Sleep. */
+
 typedef void(*thread_execution_pfn_t)(void*);
 
 struct __attribute__((packed))
@@ -41,6 +43,7 @@ thread
     void* KernelStack;
     int Identifier;
     bool Suspended;
+    unsigned int SuspendedTicks;
 };
 
 struct thread_args
@@ -49,8 +52,8 @@ struct thread_args
     uint32_t Reserved; 
 };
 
-struct thread* schedCreateThread(thread_execution_pfn_t ep, int flags);
-struct thread* schedCreateThreadEx(thread_execution_pfn_t ep, struct thread_args*, int flags);
+struct thread* schedCreateThread(thread_execution_pfn_t ep, void* data, int flags);
+struct thread* schedCreateThreadEx(thread_execution_pfn_t ep, void* data, struct thread_args*, int flags);
 void schedThreadYield(struct thread* restrict);
 void schedFreeThread(struct thread* restrict);
 void* threadAllocateStack(address_space_t*, size_t size);

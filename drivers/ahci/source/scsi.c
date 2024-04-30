@@ -10,6 +10,8 @@ int ahscSubmitCommand(struct ahci_device* dev, volatile const uint8_t* buffer, i
     struct command_table_header* th;
     struct command_table* cth;
 
+    schedMutexAcquire(dev->CommandSemaphore);
+
     th = getAddressUpper(pt, CommandListBase);
     cth = getAddressUpper(th, CommandTableAddress);
 
@@ -31,6 +33,7 @@ int ahscSubmitCommand(struct ahci_device* dev, volatile const uint8_t* buffer, i
     pt->CommandIssue = 1;
 
     schedEventPause(dev->Waiter);
+    schedMutexRelease(dev->CommandSemaphore);
     return 0;
 }
 

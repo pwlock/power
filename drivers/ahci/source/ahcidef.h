@@ -4,10 +4,17 @@
 
 #include <stdint.h>
 
+#define BIT(X) (1 << (X))
+
 #define	SATA_SIG_ATA	0x00000101
 #define	SATA_SIG_ATAPI	0xEB140101
 #define	SATA_SIG_SEMB	0xC33C0101
 #define	SATA_SIG_PM	    0x96690101
+
+#define GHC_INT_ENABLE_BIT (1 << 1)
+
+#define DEVICE_DETECT_MASK 0xF
+#define DEVICE_DETECT_PRESENT_PHY_ESTABLISHED 0x3
 
 #define FIS_H2D_TYPE 0x27
 #define FIS_D2H_TYPE 0x34

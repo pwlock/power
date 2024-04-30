@@ -48,17 +48,19 @@ $(KERNEL_OUTPUT): $(KERNEL_OBJS) kernel/linker.ld
 	$(CC) $(LDFLAGS) $(KERNEL_LDFLAGS) $(KERNEL_OBJS) -o $@
 
 build/kernel/%.d: kernel/source/%.c
-	mkdir -p build/$(dir $(subst source/,,$^))	
-	$(CC) $(KERNEL_CFLAGS) -MMD -MT '$(patsubst kernel/source/%.cpp,build/kernel/%.c.o,$<)' $< -MF $@ > /dev/null
-	rm $(patsubst %.d,%.o,$(notdir $@))
+	@mkdir -p build/$(dir $(subst source/,,$^))	
+	@$(CC) $(KERNEL_CFLAGS) -MMD -MT '$(patsubst kernel/source/%.cpp,build/kernel/%.c.o,$<)' $< -MF $@ > /dev/null
+	@rm $(patsubst %.d,%.o,$(notdir $@))
 
 build/kernel/%.c.o: kernel/source/%.c build/kernel/%.d
-	mkdir -p build/kernel/$(dir $(subst kernel/source/,,$<))
-	$(CC) $(KERNEL_CFLAGS) -c $< -o $@
+	@echo CC $<
+	@mkdir -p build/kernel/$(dir $(subst kernel/source/,,$<))
+	@$(CC) $(KERNEL_CFLAGS) -c $< -o $@
 
 build/kernel/%.s.o: kernel/source/%.s
-	mkdir -p build/$(dir $(subst source/,,$^))
-	$(AS) $(ASFLAGS) $^ -o $@
+	echo AS $^
+	@mkdir -p build/$(dir $(subst source/,,$^))
+	@$(AS) $(ASFLAGS) $^ -o $@
 
 $(SYSTEM_ROOT)/System/Headers/power/%.h: $(KERNEL_INCLUDE_DIR)/power/%.h
 	install -C -D -t $(SYSTEM_ROOT)/System/Headers/$(dir $(subst $(KERNEL_INCLUDE_DIR)/,,$^)) $^ -v

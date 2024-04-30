@@ -4,14 +4,13 @@ extern syscGenericHandler
 
 extern schedGetCurrentThread
 getStack:
-    xchg bx, bx
     call schedGetCurrentThread
     cmp rax, 0
     jne .different
     ret
 
 .different:
-    mov rax, qword [rax+212]
+    mov rax, qword [rax+220]
     ret
 
 global syscTranslate

@@ -5,6 +5,7 @@
 #include "ahcidef.h"
 #include "driver.h"
 #include "pci.h"
+#include "scheduler/synchronization.h"
 #include "utils/vector.h"
 
 #define AHCI_DEVTYPE_ATA 1
@@ -30,15 +31,15 @@ struct ahci_device
     struct ahci_device_info Info;
     volatile struct ahci_port* Port;
     struct s_event* Waiter;
+    struct s_mutex* CommandSemaphore;
 };
 
 struct ahci /*< Driver state */
 {
     struct driver_disk_interface Base;
     struct vector Devices;
+    struct vector EmptyDevices; /*< Used for polling */
     volatile struct ahci_abar* Bar;
 };
 
 struct ahci* ahciCreateState(struct pci_device* dev);
-void ahciSetCommandEngine(struct ahci_device*, bool enb);
-const uint16_t* ahciIdentifyDevice(struct ahci_device*);

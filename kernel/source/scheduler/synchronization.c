@@ -100,3 +100,44 @@ void schedMutexRelease(struct s_mutex* mtx)
 {
     mtx->Locker = 0;
 }
+
+/* semaphore */
+struct s_semaphore 
+{
+    int Slots;
+    struct vector Threads;
+};
+
+struct s_semaphore* schedCreateSemaphore(int slots)
+{
+    struct s_semaphore* s = mmAllocKernelObject(struct s_semaphore);
+    memset(s, 0, sizeof(struct s_semaphore));
+
+    s->Threads = vectorCreate(1);
+    s->Slots = slots;
+    return s;
+}
+
+void schedSemaphoreAcquire(struct s_semaphore* s)
+{
+    if (!s->Slots) {
+        struct thread* t = schedGetCurrentThread();
+        t->Suspended = true;
+
+        vectorInsert(&s->Threads, t);
+        asm volatile("hlt");
+    }
+
+    s->Slots--;
+}
+
+void schedSemaphoreRelease(struct s_semaphore* s) 
+{
+    s->Slots++;
+    if (s->Threads.Length) {
+        struct thread* t = s->Threads.Data[0];
+        t->Suspended = false;
+        
+        vectorRemove(&s->Threads, t);
+    }
+}

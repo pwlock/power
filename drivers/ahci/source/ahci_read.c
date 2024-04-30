@@ -29,7 +29,7 @@ int ahataReadSector(struct ahci_device* dev, uint64_t lba,
     th = getAddressUpper(pt, CommandListBase);
     cth = getAddressUpper(th, CommandTableAddress);
 
-    th->LengthFlags = (1 << COMMANDHTBL_LENGTH_SHIFT) 
+    th->LengthFlags = (2 << COMMANDHTBL_LENGTH_SHIFT) 
                     | ((sizeof(struct fis_h2d) / sizeof(uint32_t)) << COMMANDHTBL_FIS_LENGTH_SHIFT)
                     | COMMANDHTBL_PREFETCH_BIT;
     struct fis_h2d* hd = (struct fis_h2d*)cth->CommandFis;
@@ -43,6 +43,7 @@ int ahataReadSector(struct ahci_device* dev, uint64_t lba,
         hd->Lba5 = (uint8_t)(lba >> 40);
     }
 
+    trmLogfn("waw");
     hd->LbaLow = (uint8_t)(lba);
     hd->LbaMid = (uint8_t)(lba >> 8);
     hd->LbaHigh = (uint8_t)(lba >> 16);

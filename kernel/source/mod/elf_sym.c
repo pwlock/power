@@ -14,7 +14,7 @@ static struct elf_executable kernelFile = {};
 
 bool elfSlowCompare(const char* s1, const char* s2)
 {
-    while (s1 && *s2) {
+    while (*s1 || *s2) {
         if (*s1 != *s2)
             return false;
         s1++; s2++;
@@ -43,6 +43,8 @@ void* modGetSymbolElf(struct elf_executable* exec, const char* symbol)
     size_t stl = strlen(symbol);
     uint64_t length = symtabsec->SectionSize / symtabsec->TableEntrySize;
 
+    if (elfSlowCompare(symbol, "schedCreateThread"))
+        trmLogfn("symbol=%s", symbol);
     for (uint64_t i = 1; i < length; i++) {
         const struct elf_symtab_item* s = &symtab[i];
         size_t symtl = strlen(strtab + s->NameOffset);

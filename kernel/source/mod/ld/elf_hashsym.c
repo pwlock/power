@@ -39,17 +39,8 @@ void* modSearchHashSymbol(struct elf_executable* exec,
     const uint32_t* bucket = PaAdd(hs, sizeof(*hs));
     const uint32_t* chain = PaAdd(bucket, hs->BucketCount * sizeof(uint32_t));
     uint64_t hash = oldStyleHash(symbolName);
-    if (elfSlowCompare(symbolName, "stdout")) {
-        uint64_t tr = oldStyleHash("strtok");
-        trmLogfn("hash=%p, mdo bucket count = %i strtok hash=%p, mod bc = %i", hash, hash % hs->BucketCount, tr, tr % hs->BucketCount);
-    }
-
 
     for (uint32_t i = bucket[hash % hs->BucketCount]; i; i = chain[i]) {
-        if (!strcmp(symbolName, "stdout")) {
-            trmLogfn("chain[i] = %s %i %p", dynstr + dsym[i].NameOffset, i, exec->Base);
-        }
-
         if (oldStyleHash(dynstr + dsym[i].NameOffset) != hash) {
             continue;
         }

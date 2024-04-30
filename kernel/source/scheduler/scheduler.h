@@ -13,10 +13,10 @@ void schedThink(const struct idt_register_state* state);
 
 struct thread* schedGetCurrentThread();
 struct thread* schedGetThreadById(int id);
+void schedSleep(int ticks);
 
 void schedAddThread(struct thread*);
 void schedRemoveThread(const struct thread*);
 
 void schedEnable(bool flag);
 bool schedIsEnabled();
-

@@ -18,7 +18,7 @@ static void threadFinish()
 }
 
 struct thread* 
-schedCreateThread(thread_execution_pfn_t ep, int flags)
+schedCreateThread(thread_execution_pfn_t ep, void* data, int flags)
 {
     __unused(flags);
     struct thread* th = mmAllocKernelObject(struct thread);
@@ -27,6 +27,7 @@ schedCreateThread(thread_execution_pfn_t ep, int flags)
     th->StackTop = mmAlignedAlloc(4096, 4096);
     th->Registers.Pointers.Rsp = (uint64_t)PaAdd(th->StackTop, 4088);
     th->Registers.Pointers.Rip = (uint64_t)ep;
+    th->Registers.GeneralRegisters.Rdi = (uint64_t)data;
     th->Registers.CodeSegment = KERNEL_CODE_SEGMENT;
     th->Registers.DataSegment = KERNEL_DATA_SEGMENT;
     if (fpsGetBufferSize()) {
@@ -40,7 +41,7 @@ schedCreateThread(thread_execution_pfn_t ep, int flags)
 }
 
 struct thread* 
-schedCreateThreadEx(thread_execution_pfn_t ep, struct thread_args* args, 
+schedCreateThreadEx(thread_execution_pfn_t ep, void* data, struct thread_args* args, 
                     int flags)
 {
     struct thread* th = mmAllocKernelObject(struct thread);
@@ -53,6 +54,7 @@ schedCreateThreadEx(thread_execution_pfn_t ep, struct thread_args* args,
 
     th->Registers.Pointers.Rsp = (uint64_t)th;
     th->Registers.Pointers.Rip = (uint64_t)ep;
+    th->Registers.GeneralRegisters.Rdi = (uint64_t)data;
     th->Registers.CodeSegment = (flags & THREAD_CREATE_USER_MODE) ? USER_CODE_SEGMENT : KERNEL_CODE_SEGMENT;
     th->Registers.DataSegment = (flags & THREAD_CREATE_USER_MODE) ? USER_DATA_SEGMENT : KERNEL_DATA_SEGMENT;
     th->Registers.Cr3 = (uint64_t)args->AddressSpace;
@@ -91,12 +93,11 @@ void* threadAllocateStack(address_space_t* addrspace, size_t size)
 {
     void* stk = mmAlignedAlloc(size, 4096);
     struct address_space_mgr* c = addrGetManagerForCr3(addrspace);
-    uint64_t stackbegin = asmgrCorrectPage(c, USER_STACK_BEGIN);
-    if (stackbegin != USER_STACK_BEGIN) {
+    uint64_t stackbegin = USER_STACK_BEGIN;
+    while (!asmgrClaimPage(c, stackbegin, 2)) {
         stackbegin += (5 * 4096);
     }
 
-    asmgrClaimPage(c, stackbegin, 2);
     for (size_t i = 0; i < size; i += 4096) {
         pgMapPage(addrspace, (uint64_t)stk + i, stackbegin + i, PT_FLAG_WRITE | PT_FLAG_USER);
     }

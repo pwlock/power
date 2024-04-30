@@ -51,7 +51,6 @@ qemu: iso/$(ISO_OUTPUT)
 		-m 128                                         \
 		-no-reboot                                     \
 		-drive format=raw,media=cdrom,file=iso/power.iso,index=0 \
-		-drive media=disk,file=loc.img				   \
 		-serial stdio                                  \
 		-smp 1                                         \
 		-usb                                           \

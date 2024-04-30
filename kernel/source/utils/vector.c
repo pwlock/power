@@ -56,8 +56,3 @@ void* vectorRemove(struct vector* v, void* data)
     v->Length--;
     return data;
 }
-
-void vectorMerge(struct vector* mergee, const struct vector* merged)
-{
-    
-}

@@ -76,7 +76,7 @@ void keMain()
     tmCreateSecondaryTimer();
 
     schedCreate();
-    schedAddThread(schedCreateThread(secondInit, 0));
+    schedAddThread(schedCreateThread(secondInit, NULL, 0));
     schedEnable(true);
 
     for (;;)
@@ -112,4 +112,6 @@ void secondInit(void* nothing)
     }
 
     pcCreateProcess(NULL, "A:/System/linit.elf", NULL);
+    schedSleep(10);
+    trmLogfn("oi!");
 }
