@@ -16,7 +16,7 @@ static int awaitTimer(volatile uint32_t* lapic)
     ApicValue(lapic, 0x320) = v;
 
     lapic[LAPIC_REG(0x380)] = 0xFFFFFFFF;
-    tmSetReloadValue(d, 3000);
+    tmSetReloadValue(d, tmGetMillisecondUnit(d) * 5);
 
     uint32_t cnt = (0xFFFFFFF - lapic[LAPIC_REG(0x390)]) & 0xFFFF;
     lapic[LAPIC_REG(0x380)] = cnt;

@@ -29,6 +29,7 @@ void modAutomaticLoad()
             }
 
             memcpy(temp, begin, ptr - begin);
+            trmLogfn("loading driver %s", temp);
             if (*temp) 
                 modLoadDriver(temp);
             begin = ptr + 1;

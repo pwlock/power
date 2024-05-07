@@ -118,6 +118,7 @@ partGetPartitions(struct driver_disk_device_interface* interf)
 void partInit(struct driver_disk_interface* di)
 {
     size_t max = di->getDeviceCount(di);
+    trmLogfn("max=%i", max);
     size_t length = 0;
     struct driver_disk_device_interface* dev = NULL;
     struct pt_disk* disk = NULL;
@@ -128,6 +129,7 @@ void partInit(struct driver_disk_interface* di)
             break;
 
         dev = di->getDevice(di, length);
+        trmLogfn("dev=%p", dev);
         if (!dev) {
             length++;
             continue;

@@ -33,14 +33,14 @@ void schedEventRaise(struct s_event* event)
         return;
 
     struct thread* t;
+    event->Flag = true;
     for (int i = 0; i < event->ArrayIndex; i++) {
         t = schedGetThreadById(event->Threads[i]);
+        trmLogfn("rasing thread %i (%p)", event->Threads[i], t);
         if (!t)
             continue;
         t->Suspended = false;
     }
-
-    event->Flag = true;
 }
 
 void schedEventPause(struct s_event* event) 
@@ -53,6 +53,7 @@ void schedEventPause(struct s_event* event)
     t->Suspended = true;
 
     event->Threads[event->ArrayIndex] = t->Identifier;
+    trmLogfn("pausing thread %i", t->Identifier);
     event->ArrayIndex++;
     schedThreadYield(t);
     schedEnable(true);

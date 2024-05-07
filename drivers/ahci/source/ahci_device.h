@@ -13,5 +13,5 @@ struct ahci_device* ahciCreateDevice(struct ahci* ahc,
 void ahciDeviceConfigure(struct ahci_device* dev);
 void ahciPollDeviceThread(void* data);
 
-void ahciSetCommandEngine(struct ahci_device*, bool enb);
+int ahciSetCommandEngine(volatile struct ahci_port*, bool enb);
 const uint16_t* ahciIdentifyDevice(struct ahci_device*);

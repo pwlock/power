@@ -2,6 +2,7 @@
    Purpose: FXSAVE and FXRSTOR */
 #pragma once
 
+#include "term/terminal.h"
 static inline int fpsGetBufferSize()
 {
     return 512;

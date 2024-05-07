@@ -1,16 +1,17 @@
 #include "scsi.h"
+#include "ahci_device.h"
 #include "ahcidef.h"
-#include "memory/physical.h"
+
+#include "abstract/timer.h"
 #include "scheduler/synchronization.h"
 #include "term/terminal.h"
+#include "memory/physical.h"
 
 int ahscSubmitCommand(struct ahci_device* dev, volatile const uint8_t* buffer, int length)
 {
     volatile struct ahci_port* pt = dev->Port;
     struct command_table_header* th;
     struct command_table* cth;
-
-    schedMutexAcquire(dev->CommandSemaphore);
 
     th = getAddressUpper(pt, CommandListBase);
     cth = getAddressUpper(th, CommandTableAddress);
@@ -25,15 +26,25 @@ int ahscSubmitCommand(struct ahci_device* dev, volatile const uint8_t* buffer, i
     struct fis_h2d* id = (struct fis_h2d*)cth->CommandFis;
     id->Type = FIS_H2D_TYPE;
     id->Device = 0;
-    id->MultiplierCommand = FIS_H2D_COMMAND_BIT;
     id->Features = 1;
+    id->MultiplierCommand = FIS_H2D_COMMAND_BIT;
+
     id->Command = 0xA0;
     
+    trmLogfn("submitting command = %p, ci=%p serr=%p is=%p cmd=%p", 
+        buffer[0], pt->CommandIssue, pt->SataError, pt->InterruptStatus, 
+        pt->CommandStatus & PORT_COMMAND_STATUS_CR_BIT);
+        
     schedEventResetFlag(dev->Waiter);
     pt->CommandIssue = 1;
-
     schedEventPause(dev->Waiter);
-    schedMutexRelease(dev->CommandSemaphore);
+
+    if (dev->ErrorInterrupt) {
+        /* Restart command engine in order to clear PxCI. */
+        ahciSetCommandEngine(dev->Port, false);
+        ahciSetCommandEngine(dev->Port, true);
+    }
+
     return 0;
 }
 
@@ -84,5 +95,5 @@ bool ahscTrayEmpty(struct ahci_device* dev)
 
     ahscSubmitCommand(dev, commandBuffer, 10);
     int sense = ahscRequestSense(dev);
-    return sense == 0x23a00; /* MEDIUM NOT PRESENT */
+    return (sense >> 8) == 0x23a; /* MEDIUM NOT PRESENT */
 }

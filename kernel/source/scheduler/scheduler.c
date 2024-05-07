@@ -4,7 +4,6 @@
 #include "arch/i386/gdt.h"
 #include "memory/physical.h"
 #include "scheduler/thread.h"
-#include "term/terminal.h"
 #include "utils/vector.h"
 
 struct thread_list {
@@ -104,7 +103,7 @@ nextThread()
 static void idleTask()
 {
     while (true) {
-        schedThreadYield(schedGetCurrentThread());
+        schedThreadYield();
         asm volatile("sti; hlt");
     }
 }
@@ -124,7 +123,10 @@ static inline void loadRegisters(const struct idt_register_state* state)
             defScheduler->CurrentExec->Thread->Registers.DataSegment |= 3;
         }
 
-        fpsSave(defScheduler->CurrentExec->Thread->Registers.FloatingPointState);
+        void* fps = defScheduler->CurrentExec->Thread->Registers.FloatingPointState;
+        if (fps)
+            fpsSave(fps);
+
         memcpy(&defScheduler->CurrentExec->Thread->Registers.GeneralRegisters,
                state->GeneralRegisters, sizeof(*state->GeneralRegisters));
         memcpy(&defScheduler->CurrentExec->Thread->Registers.Pointers,

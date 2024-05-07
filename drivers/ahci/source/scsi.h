@@ -10,7 +10,8 @@
 
 /* Returns the command slot used. */
 int ahscSubmitCommand(struct ahci_device* dev, 
-                      volatile const uint8_t* buffer, int length);
+                      volatile const uint8_t* buffer, 
+                      int length);
 
 /* Test the device */
 void ahscMakeReady(struct ahci_device* dev);

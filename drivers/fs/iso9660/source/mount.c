@@ -32,7 +32,7 @@ isofsMount(struct isofs* iso, struct driver_disk_device_interface* dev, lba_t be
            struct fs_mountpoint* mp)
 {
     struct mounted_isofs* mounted = NULL;
-    uint8_t* buffer = mmAlignedAlloc(800, 1);
+    uint8_t* buffer = mmAllocKernel(800);
     lba_t lba = beginLba + 16;
 
     while (true) {

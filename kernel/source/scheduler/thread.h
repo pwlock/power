@@ -54,6 +54,6 @@ struct thread_args
 
 struct thread* schedCreateThread(thread_execution_pfn_t ep, void* data, int flags);
 struct thread* schedCreateThreadEx(thread_execution_pfn_t ep, void* data, struct thread_args*, int flags);
-void schedThreadYield(struct thread* restrict);
+void schedThreadYield();
 void schedFreeThread(struct thread* restrict);
 void* threadAllocateStack(address_space_t*, size_t size);

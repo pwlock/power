@@ -171,3 +171,10 @@ bool mmIsPhysical(void* ptr)
 
     return false;
 }
+
+void* mmAllocKernel(size_t size)
+{
+    void* ptr = mmAlignedAlloc(size, 1);
+    memset(ptr, 0, size);
+    return ptr;
+}

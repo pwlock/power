@@ -75,6 +75,9 @@ void keMain()
     tmCreateTimer();
     tmCreateSecondaryTimer();
 
+    struct limine_framebuffer_response* r = rqGetFramebufferRequest();
+    trmLogfn("edid = %p, address = %p", r->framebuffers[0]->edid, r->framebuffers[0]->address);
+
     schedCreate();
     schedAddThread(schedCreateThread(secondInit, NULL, 0));
     schedEnable(true);
@@ -99,19 +102,25 @@ void secondInit(void* nothing)
         trmLogfn("drive controller %s not found", driveController);
 
     struct driver_disk_interface* di = man->Info->Interface;
+    trmLogfn("di=%p", di);
     struct driver_disk_device_interface* ddi = di->getDevice(di, 0);
+    trmLogfn("ddi=%p");
     partInit(di);
 
     vfsInit();
     inpCreateInputRing();
-    const char* fsType;
-    cmdGetCommandArgument("fstype", &fsType);
-    if (!strncmp("iso9660", fsType, 7)) {
-        /* ISO9660 is not used in a partitioned space. */
-        vfsCreateFilesystem("iso9660", 0, ddi);
+    if (!cmdHasArgument("noinit")) {
+        const char* fsType;
+        cmdGetCommandArgument("fstype", &fsType);
+        if (!strncmp("iso9660", fsType, 7)) {
+            /* ISO9660 is not used in a partitioned space. */
+            vfsCreateFilesystem("iso9660", 0, ddi);
+        }
+        pcCreateProcess(NULL, "A:/System/linit.elf", NULL);
     }
-
-    pcCreateProcess(NULL, "A:/System/linit.elf", NULL);
-    schedSleep(10);
-    trmLogfn("oi!");
+    else {
+        trmLogfn("Everything done! But the kernel was instructed to not load init");
+        for (;;)
+            asm volatile("hlt");
+    }
 }

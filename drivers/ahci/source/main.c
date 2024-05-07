@@ -45,5 +45,6 @@ void driverMain(struct kdriver_manager* mms)
     cmd |= (1 << 8);
     pciWriteDoubleWordToDevice(mms->LoadReason, 0x4, cmd);
     info.Interface = ahciCreateState(mms->LoadReason);
+    trmLogfn("exit from main");
 }
 

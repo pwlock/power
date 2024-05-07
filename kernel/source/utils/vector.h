@@ -6,9 +6,9 @@
 
 struct vector
 {
+    void** Data;
     size_t Length;
     size_t Capacity;
-    void** Data;
 };
 
 struct vector vectorCreate(size_t initalLength);

@@ -11,6 +11,19 @@
 #define AHCI_DEVTYPE_ATA 1
 #define AHCI_DEVTYPE_ATAPI 2
 
+static inline uint32_t ahciRead(volatile uint32_t* address)
+{
+    uint32_t r = *address;
+    __barrier();
+    return r;
+}
+
+static inline void ahciWrite(volatile uint32_t* address, uint32_t value)
+{
+    *address = value;
+    __barrier();
+}
+
 struct ahci_device_info
 {
     char Model[40];

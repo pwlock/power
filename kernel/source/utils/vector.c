@@ -1,12 +1,21 @@
 #include "vector.h"
 #include "memory/physical.h"
+#include "term/terminal.h"
+
+#define GROW_SCALE ((sizeof(void*) * 4))
+#define GROW(X) (X * GROW_SCALE)
 
 static void** resizeBuffer(void** oldBuffer, size_t* length)
 {
-    void** newb = mmAlignedAlloc(*length + (sizeof(void*) * 4), 1);
-    memset(newb, 0, *length + (sizeof(void*) * 4));
-    memcpy(newb, oldBuffer, *length * sizeof(void*));
-    (*length) = *length + 4;
+    size_t oldLength = *length;
+    void** newb = mmAllocKernel((oldLength * GROW_SCALE) + GROW_SCALE);
+    memset(newb, 0, GROW(oldLength) + GROW_SCALE);
+    memcpy(newb, oldBuffer, oldLength * sizeof(void*));
+    (*length) = oldLength + 4;
+
+    if (oldBuffer) {
+        mmAlignedFree(oldBuffer, oldLength * sizeof(void*));
+    }
 
     return newb;
 }
@@ -19,7 +28,7 @@ struct vector vectorCreate(size_t initialLength)
     v.Data = NULL;
 
     if (initialLength != 0) {
-        v.Data = mmAlignedAlloc(sizeof(void*) * initialLength, 1);
+        v.Data = mmAllocKernel(sizeof(void*) * initialLength);
     }
 
     return v;

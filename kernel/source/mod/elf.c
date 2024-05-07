@@ -7,7 +7,7 @@
 #include "term/terminal.h"
 #include "utils/vector.h"
 
-#define EXEC_BASE 0xC0000000
+#define EXEC_BASE 0xDCA0000000
 #define UME_BASE  0x54000000000
 
 static bool isPic(const struct elf_file_header* he)

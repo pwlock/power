@@ -7,7 +7,6 @@ schedTaskSwitch:
     add r8, 40
 
     mov rax, qword [rdi+172]
-    fxrstor [rax]
 
     mov rsp, qword [rdi+24]
     push qword [rdi]

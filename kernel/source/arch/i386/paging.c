@@ -33,6 +33,7 @@ void* pgCreateAddressSpace()
 {
     uint64_t hhdm = rqGetHhdmRequest()->offset;
     uint64_t* pml4 = mmAlignedAlloc(4096, 4096);
+    memset(pml4, 0, 4096);
     struct limine_memmap_response* mmap = rqGetMemoryMapRequest();
     struct limine_kernel_address_response* addr = rqGetKernelAddressRequest();
     const struct limine_memmap_entry* ent;

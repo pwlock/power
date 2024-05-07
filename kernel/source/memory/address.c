@@ -35,9 +35,10 @@ addrGetManagerForCr3(address_space_t* addr)
 
     if (!chosen) {
         chosen = mmAllocKernelObject(struct address_space_mgr);
-        memset(chosen, 0, sizeof(address_space_t));
         chosen->AddressSpace = addr;
+        
         vectorInsert(&cr3vector, chosen);
+        trmLogfn("cr3vector=%p", &cr3vector);
     }
     
     return chosen;

@@ -1,3 +1,4 @@
+#include "ahci_device.h"
 #include "power/error.h"
 #include "scheduler/synchronization.h"
 #include "term/terminal.h"
@@ -30,8 +31,11 @@ int ahataReadSector(struct ahci_device* dev, uint64_t lba,
     cth = getAddressUpper(th, CommandTableAddress);
 
     th->LengthFlags = (2 << COMMANDHTBL_LENGTH_SHIFT) 
-                    | ((sizeof(struct fis_h2d) / sizeof(uint32_t)) << COMMANDHTBL_FIS_LENGTH_SHIFT)
-                    | COMMANDHTBL_PREFETCH_BIT;
+                    | COMMANDHTBL_PREFETCH_BIT 
+                    | COMMANDHTBL_CLEAR_BIT
+                    | ((sizeof(struct fis_h2d) / sizeof(uint32_t)) 
+                        << COMMANDHTBL_FIS_LENGTH_SHIFT);
+
     struct fis_h2d* hd = (struct fis_h2d*)cth->CommandFis;
     memset(hd, 0, sizeof(*hd));
 
@@ -43,7 +47,6 @@ int ahataReadSector(struct ahci_device* dev, uint64_t lba,
         hd->Lba5 = (uint8_t)(lba >> 40);
     }
 
-    trmLogfn("waw");
     hd->LbaLow = (uint8_t)(lba);
     hd->LbaMid = (uint8_t)(lba >> 8);
     hd->LbaHigh = (uint8_t)(lba >> 16);
@@ -53,6 +56,12 @@ int ahataReadSector(struct ahci_device* dev, uint64_t lba,
 
     pt->CommandIssue = 1;
     schedEventPause(dev->Waiter);
+
+    if (dev->ErrorInterrupt) {
+        ahciSetCommandEngine(pt, false);
+        ahciSetCommandEngine(pt, true);
+        return -ERROR_IO;
+    }
 
     struct prdt* pd = cth->PhysicalRegion;
 
@@ -105,6 +114,12 @@ int ahatapiReadSector(struct ahci_device* dev, uint64_t lba,
     };
 
     ahscSubmitCommand(dev, cmd, 12);
+    if (dev->ErrorInterrupt) {
+        ahciSetCommandEngine(pt, false);
+        ahciSetCommandEngine(pt, true);
+        return -ERROR_IO;
+    }
+
     struct prdt* pd = cth->PhysicalRegion;
 
     char* db;

@@ -14,4 +14,5 @@ struct timer {
     void* Reserved[1];
 
     int EnabledFlag;
+    uint64_t MillisecondScale;
 };

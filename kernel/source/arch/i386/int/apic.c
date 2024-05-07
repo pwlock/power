@@ -122,7 +122,7 @@ struct apic_int_ctl* apicCtlCreate()
 
     interruptHandlers = vectorCreate(3);
 
-    struct apic_int_ctl* this = mmAlignedAlloc(sizeof(struct apic_int_ctl), 1);
+    struct apic_int_ctl* this = mmAllocKernelObject(struct apic_int_ctl);
     this->Base.isVectorFree = isVectorFree;
     this->Base.ackInterrupt = ackInterrupt;
     this->Base.getControllerType = getControllerType;

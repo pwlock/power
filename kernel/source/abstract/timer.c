@@ -43,5 +43,5 @@ int tmGetType(struct timer* this)
 
 int tmGetMillisecondUnit(struct timer* this)
 {
-    return this->getMillisecondUnit(this);
+    return this->MillisecondScale;
 }
