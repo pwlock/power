@@ -1,6 +1,6 @@
 BasedOnStyle: WebKit
 BreakBeforeBinaryOperators: NonAssignment
-ColumnLimit: 80
+ColumnLimit: 86
 IndentWidth: 4
 UseTab: Never
 BreakBeforeBraces: Linux

@@ -20,5 +20,11 @@ typedef unsigned long __uint64;
 
 typedef __int32 __handle;
 
+#if defined(__GNUC__) || defined(__clang__)
+#define __kpacked __attribute__((packed))
+#else
+#define __kpacked
+#endif
+
 #endif
 

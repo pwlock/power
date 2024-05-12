@@ -172,3 +172,13 @@ void trmLogfn(const char *msg, ...)
     ssfn_dst.x = 0;
     ssfn_dst.y += ssfn_src->height;
 }
+
+void trmSetFramebuffer(void* framebuffer, int h, int w, int stride)
+{
+    ssfn_dst.ptr = framebuffer;
+    ssfn_dst.x = 0;
+    ssfn_dst.y = 0;
+    ssfn_dst.p = stride;
+    ssfn_dst.h = h;
+    ssfn_dst.w = w;
+}

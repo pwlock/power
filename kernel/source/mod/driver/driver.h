@@ -93,3 +93,6 @@ struct driver_mounted_fs_interface
 
 /* Input driver */
 #define DRIVER_ROLE_INPUT 0x3
+
+/* Display driver */
+#define DRIVER_ROLE_DISPLAY 0x5

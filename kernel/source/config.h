@@ -12,3 +12,9 @@
 
 #define __min(X, y) ((X) > (y)) ? (y) : (X)
 #define __max(X, y) ((X) > (y)) ? (X) : (y)
+
+__attribute__((always_inline))
+static inline void __spinloop_hint()
+{
+    asm volatile ("pause");
+}
